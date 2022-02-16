@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-// See https://aka.ms/new-console-template for more information
+﻿// See https://aka.ms/new-console-template for more information
 
 // reading a txt file and returning an array of strings
 var lines = File.ReadAllLines("Words.txt");
@@ -69,9 +67,6 @@ static void Game(string[,] matrix, string[,] matrix_words, string dificulty, int
 {
     List<string> winning_choices = new List<string>();
     bool istrue = true;
-    int chances_start = chances;
-    Stopwatch sw = new Stopwatch();
-    sw.Start();
     while (istrue ==true)
     {
         
@@ -82,25 +77,24 @@ static void Game(string[,] matrix, string[,] matrix_words, string dificulty, int
             Console.Clear();
             Display(matrix, dificulty, chances,score);
             Console.WriteLine("Please chose your field eg 'b1'");
-            
-            
             string input = Console.ReadLine();
             bool choice_valid = true;
             bool negation = false;
             int lenght = input.Length;
             char input_row = 'a';
-            char input_row_upper = 'A';
+            char input_row_upper = 'G';
             int input_col = 1;
             
             do
             {
                 if (lenght == 2 && (!winning_choices.Contains(input)))
                 {
+                   
+                    input_row = input[0];
+                    input_row_upper = Char.ToUpper(input_row);
                     if ((input[1] == '1' || input[1] == '2' || input[1] == '3' || input[1] == '4') && (input_row_upper == 'A' || input_row_upper == 'B' || input_row_upper == 'C' || input_row_upper == 'D'))
                     {
                         input_col = Convert.ToInt32(new string(input[1], 1));
-                        input_row = input[0];
-                        input_row_upper = Char.ToUpper(input_row);
                         choice_valid = true;
 
                         if (lenght > 2 || lenght == 0)
@@ -116,6 +110,7 @@ static void Game(string[,] matrix, string[,] matrix_words, string dificulty, int
                         choice_valid = false;
                         Console.WriteLine("Please chose a valid field eg 'b1'");
                         input = Console.ReadLine();
+                        lenght = input.Length;
                     }
                 }
                 else 
@@ -139,18 +134,18 @@ static void Game(string[,] matrix, string[,] matrix_words, string dificulty, int
             int lenght1 = input1.Length;
 
             char second_input_row = 'a';
-            char second_input_row_upper = 'A';
+            char second_input_row_upper = 'G';
             int second_input_col = 1;
             
             do
             {
-                if (lenght1 == 2 && (!winning_choices.Contains(input1)))
+                if (lenght1 == 2 && (!winning_choices.Contains(input1))&& input1!=input)
                 {
+                    second_input_row = input1[0];
+                    second_input_row_upper = Char.ToUpper(second_input_row);
                     if ((input1[1] == '1' || input1[1] == '2' || input1[1] == '3' || input1[1] == '4') && (second_input_row_upper == 'A' || second_input_row_upper == 'B' || second_input_row_upper == 'C' || second_input_row_upper == 'D'))
                     {
                         second_input_col = Convert.ToInt32(new string(input1[1], 1));
-                        second_input_row = input1[0];
-                        second_input_row_upper = Char.ToUpper(second_input_row);
                         choice_valid = true;
 
                         if (lenght1 > 2 || lenght1 == 0)
@@ -166,6 +161,7 @@ static void Game(string[,] matrix, string[,] matrix_words, string dificulty, int
                         choice_valid = false;
                         Console.WriteLine("Please chose a valid field eg 'b1'");
                         input1 = Console.ReadLine();
+                        lenght1 = input1.Length;
                     }
                 }
                 else
@@ -188,11 +184,11 @@ static void Game(string[,] matrix, string[,] matrix_words, string dificulty, int
             {
                 matrix[second_input_row_numb, second_input_col] = matrix_words[second_input_row_numb, second_input_col];
                 Console.WriteLine("You were right! grats");
-                
+                Thread.Sleep(1000);
                 score = score + 1;
                 winning_choices.Add(input);
                 winning_choices.Add(input1);
-                
+                Thread.Sleep(1000);
             }
             //is wrong
             else
@@ -200,7 +196,7 @@ static void Game(string[,] matrix, string[,] matrix_words, string dificulty, int
                 matrix[input_row_numb, input_col] = "X";
                 matrix[second_input_row_numb, second_input_col] = "X";
                 Console.WriteLine("I am sorry you were wrong. Try again");
-                
+                Thread.Sleep(1000);
                 chances = chances - 1;
                 Console.Clear();
                 Display(matrix, dificulty, chances, score);
@@ -208,10 +204,8 @@ static void Game(string[,] matrix, string[,] matrix_words, string dificulty, int
             //win scenario
             if ((dificulty.Equals("easy") && score == 4)||(dificulty.Equals("hard") && score == 8))
             {
-                sw.Stop();
-                Console.WriteLine($"Congrats you won! It took {chances_start - chances} chances and your time equals {sw.Elapsed}\nDo you want to play again? (y/n)");
-                Console.WriteLine("do you want to save your score?");
-       
+                
+                Console.WriteLine("Congrats you won! Do you want to play again? (y/n)");
                 string antwort_won = Console.ReadLine();
                 if (antwort_won.Equals("y"))
                 {
@@ -257,7 +251,7 @@ static void Game(string[,] matrix, string[,] matrix_words, string dificulty, int
                 }
             }
         }
-        //loose scenario
+        //win scenario
         else
         {
             Console.WriteLine("I am sorry you are run out of chances. Do you want to play again? (y/n)");
@@ -298,7 +292,6 @@ static void Game(string[,] matrix, string[,] matrix_words, string dificulty, int
 Console.WriteLine("Greetings! Do you wont to play a game?");
 Console.WriteLine("If so, please chose your destiny (dificulty level: hard/easy)");
 string dificulty = Console.ReadLine();
-
 
 
 //Coletcing entry data and seting start values
@@ -386,7 +379,6 @@ while (game_on)
 
 
     //Launch
-    
     Game(matrix, matrix_words, dificulty, chances, score, n);
 }
 
